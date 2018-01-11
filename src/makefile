@@ -21,7 +21,7 @@ OBJS=main.o core/dm-globals.o core/dm-audio.o core/dm-gfx.o core/bk-sim.o x-api/
 	rtaudio/RtAudio.o stk/Delay.o stk/DelayL.o stk/MidiFileIn.o \
 	stk/Stk.o 
 
-main: $(OBJS)
+ba_dum_tss: $(OBJS)
 	$(CXX) -o ba_dum_tss $(OBJS) $(LIBS)
 
 main.o: main.cpp
