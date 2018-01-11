@@ -1,7 +1,15 @@
-CXX=g++
-INCLUDES=-Irtaudio/ -Istk/ -Ix-api/ -Iy-api
-FLAGS=-D__MACOSX_CORE__ $(INCLUDES) -c
-LIBS=-framework CoreAudio -framework CoreMIDI -framework CoreFoundation \
-        -framework IOKit -framework Carbon -framework OpenGL \
-        -framework GLUT -lstdc++ -lm
+SYSTEM := $(shell uname -s)
+
+CXX = g++
+INCLUDES = -Icore/ -Irtaudio/ -Istk/ -Ix-api/ -Iy-api/ -I/opt/local/include
+
+ifeq ($(SYSTEM),Linux)
+  FLAGS := -D__LINUX_ALSA__ $(INCLUDES) -c
+  LIBS  := $(shell pkg-config --libs fluidsynth alsa gl glu freeglut) -lpthread -lm
+else
+  FLAGS := -D__MACOSX_CORE__ $(INCLUDES) -c
+  LIBS  := -framework CoreAudio -framework CoreMIDI -framework CoreFoundation \
+		   -framework IOKit -framework Carbon -framework OpenGL \
+		   -framework GLUT -lstdc++ -lm
+endif
 

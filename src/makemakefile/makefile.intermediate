@@ -1,34 +1,28 @@
-OBJS=main.o core/dm-audio.o core/dm-entity.o core/dm-gfx.o \
-	core/dm-globals.o core/dm-me.o core/dm-sim.o x-api/x-audio.o \
-	x-api/x-buffer.o x-api/x-fun.o x-api/x-gfx.o x-api/x-loadlum.o \
-	x-api/x-loadrgb.o x-api/x-thread.o x-api/x-vector3d.o y-api/y-charting.o \
-	y-api/y-echo.o y-api/y-entity.o y-api/y-fft.o y-api/y-particle.o \
-	y-api/y-score-reader.o y-api/y-waveform.o rtaudio/RtAudio.o stk/Delay.o \
-	stk/DelayL.o stk/MidiFileIn.o stk/Stk.o 
+
+OBJS=main.o core/dm-globals.o core/dm-audio.o core/dm-gfx.o core/bk-sim.o x-api/x-audio.o x-api/x-buffer.o x-api/x-fun.o \
+	x-api/x-gfx.o x-api/x-loadlum.o x-api/x-loadrgb.o x-api/x-thread.o \
+	x-api/x-vector3d.o y-api/y-charting.o y-api/y-echo.o y-api/y-entity.o \
+	y-api/y-fft.o y-api/y-fluidsynth.o y-api/y-particle.o y-api/y-score-reader.o y-api/y-waveform.o \
+	rtaudio/RtAudio.o stk/Delay.o stk/DelayL.o stk/MidiFileIn.o \
+	stk/Stk.o 
 
 main: $(OBJS)
-	$(CXX) -o main $(OBJS) $(LIBS)
+	$(CXX) -o ba_dum_tss $(OBJS) $(LIBS)
 
 main.o: main.cpp
 	$(CXX) -o main.o $(FLAGS) main.cpp
 
+core/dm-globals.o: core/dm-globals.h core/dm-globals.cpp
+	$(CXX) -o core/dm-globals.o $(FLAGS) core/dm-globals.cpp
+
 core/dm-audio.o: core/dm-audio.h core/dm-audio.cpp
 	$(CXX) -o core/dm-audio.o $(FLAGS) core/dm-audio.cpp
-
-core/dm-entity.o: core/dm-entity.h core/dm-entity.cpp
-	$(CXX) -o core/dm-entity.o $(FLAGS) core/dm-entity.cpp
 
 core/dm-gfx.o: core/dm-gfx.h core/dm-gfx.cpp
 	$(CXX) -o core/dm-gfx.o $(FLAGS) core/dm-gfx.cpp
 
-core/dm-globals.o: core/dm-globals.h core/dm-globals.cpp
-	$(CXX) -o core/dm-globals.o $(FLAGS) core/dm-globals.cpp
-
-core/dm-me.o: core/dm-me.h core/dm-me.cpp
-	$(CXX) -o core/dm-me.o $(FLAGS) core/dm-me.cpp
-
-core/dm-sim.o: core/dm-sim.h core/dm-sim.cpp
-	$(CXX) -o core/dm-sim.o $(FLAGS) core/dm-sim.cpp
+core/bk-sim.o: core/bk-sim.h core/bk-sim.cpp
+	$(CXX) -o core/bk-sim.o $(FLAGS) core/bk-sim.cpp
 
 x-api/x-audio.o: x-api/x-audio.h x-api/x-audio.cpp
 	$(CXX) -o x-api/x-audio.o $(FLAGS) x-api/x-audio.cpp
@@ -65,6 +59,9 @@ y-api/y-entity.o: y-api/y-entity.h y-api/y-entity.cpp
 
 y-api/y-fft.o: y-api/y-fft.h y-api/y-fft.cpp
 	$(CXX) -o y-api/y-fft.o $(FLAGS) y-api/y-fft.cpp
+
+y-api/y-fluidsynth.o: y-api/y-fluidsynth.h y-api/y-fluidsynth.cpp
+	$(CXX) -o y-api/y-fluidsynth.o $(FLAGS) y-api/y-fluidsynth.cpp
 
 y-api/y-particle.o: y-api/y-particle.h y-api/y-particle.cpp
 	$(CXX) -o y-api/y-particle.o $(FLAGS) y-api/y-particle.cpp

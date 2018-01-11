@@ -4,8 +4,8 @@ makefile.new: makefile.header makefile.intermediate
 makemakefile: makemakefile.cpp
 	g++ -o makemakefile makemakefile.cpp
 
-makefile.intermediate: input.txt makemakefile
-	cat input.txt | ./makemakefile > makefile.intermediate
+#makefile.intermediate: input.txt makemakefile
+#	cat input.txt | ./makemakefile > makefile.intermediate
 
 clean:
 	rm -f makemakefile makefile.new makefile.intermediate
