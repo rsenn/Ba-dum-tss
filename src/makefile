@@ -1,120 +1,143 @@
-SNDDRV ?= alsa
 
-TARGET := ba_dum_tss.$(SNDDRV)
 
 SYSTEM := $(shell uname -s)
 
 CXX = g++
 INCLUDES = -Icore/ -Irtaudio/ -Istk/ -Ix-api/ -Iy-api/ -I/opt/local/include
 
+ifeq ($(SYSTEM),MinGW)
+  CXX = x86_64-w64-mingw32-g++
+  FLAGS = $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --cflags  fluidsynth ) -DNO_CHECK_EXISTS $(INCLUDES) -c
+  FLAGS += -D__WINDOWS_PTHREAD__
+  LIBS = $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --libs fluidsynth)
+  FLAGS += -DFREEGLUT_STATIC
+  LIBS += -lfreeglut_static #$(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --static freeglut) 
+  LIBS += -lglu32 -lopengl32 -ldsound -lwinmm -lgdi32 -lole32 -lm 
+  SNDDRV ?= dsound
+  EXEEXT = .exe
+  O = obj
+else
 ifeq ($(SYSTEM),Linux)
-  FLAGS = $(INCLUDES) -c
+  FLAGS =  $(INCLUDES) -c
   LIBS  = $(shell pkg-config --libs fluidsynth $(SNDDRV) gl glu freeglut) -lpthread -lm
+  SNDDRV ?= alsa
 else
   FLAGS = -D__MACOSX_CORE__ $(INCLUDES) -c
   LIBS  = -framework CoreAudio -framework CoreMIDI -framework CoreFoundation \
 		   -framework IOKit -framework Carbon -framework OpenGL \
 		   -framework GLUT -lstdc++ -lm
+  SNDDRV ?= coreaudio
 endif
+endif
+O ?= o
 
-OBJS = main.o core/dm-globals.o core/dm-audio.o core/dm-gfx.o core/bk-sim.o x-api/x-audio.o x-api/x-buffer.o x-api/x-fun.o \
-	x-api/x-gfx.o x-api/x-loadlum.o x-api/x-loadrgb.o x-api/x-thread.o \
-	x-api/x-vector3d.o y-api/y-charting.o y-api/y-echo.o y-api/y-entity.o \
-	y-api/y-fft.o y-api/y-fluidsynth.o y-api/y-particle.o y-api/y-score-reader.o y-api/y-waveform.o \
-	stk/Delay.o stk/DelayL.o stk/MidiFileIn.o \
-	stk/Stk.o 
+TARGET := ba_dum_tss.$(SNDDRV)$(EXEEXT)
+
+OBJS := main.$(O) core/dm-globals.$(O) core/dm-audio.$(O) core/dm-gfx.$(O) core/bk-sim.$(O) x-api/x-audio.$(O) x-api/x-buffer.$(O) x-api/x-fun.$(O) \
+	x-api/x-gfx.$(O) x-api/x-loadlum.$(O) x-api/x-loadrgb.$(O) x-api/x-thread.$(O) \
+	x-api/x-vector3d.$(O) y-api/y-charting.$(O) y-api/y-echo.$(O) y-api/y-entity.$(O) \
+	y-api/y-fft.$(O) y-api/y-fluidsynth.$(O) y-api/y-particle.$(O) y-api/y-score-reader.$(O) y-api/y-waveform.$(O) \
+	stk/Delay.$(O) stk/DelayL.$(O) stk/MidiFileIn.$(O) \
+	stk/Stk.$(O) 
 
 all: $(TARGET)
 
-ba_dum_tss.jack: $(OBJS) rtaudio/RtAudio-jack.o
+ba_dum_tss.dsound$(EXEEXT): $(OBJS) rtaudio/RtAudio-dsound.$(O)
 	$(CXX) -o $@ $^ $(LIBS)
 
-ba_dum_tss.alsa: $(OBJS) rtaudio/RtAudio-alsa.o
-	$(CXX) -o $@ $^ $(LIBS)
+ba_dum_tss.jack: $(OBJS) rtaudio/RtAudio-jack.$(O)
+	$(CXX) -o $@ $< $(LIBS)
 
-main.o: main.cpp
-	$(CXX) -o $@ $(FLAGS) main.cpp
+ba_dum_tss.alsa: $(OBJS) rtaudio/RtAudio-alsa.$(O)
+	$(CXX) -o $@ $< $(LIBS)
 
-core/dm-globals.o: core/dm-globals.h core/dm-globals.cpp
-	$(CXX) -o $@ $(FLAGS) core/dm-globals.cpp
+main.$(O): main.cpp
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-core/dm-audio.o: core/dm-audio.h core/dm-audio.cpp
-	$(CXX) -o $@ $(FLAGS) core/dm-audio.cpp
+core/dm-globals.$(O): core/dm-globals.cpp core/dm-globals.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-core/dm-gfx.o: core/dm-gfx.h core/dm-gfx.cpp
-	$(CXX) -o $@ $(FLAGS) core/dm-gfx.cpp
+core/dm-audio.$(O): core/dm-audio.cpp core/dm-audio.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-core/bk-sim.o: core/bk-sim.h core/bk-sim.cpp
-	$(CXX) -o $@ $(FLAGS) core/bk-sim.cpp
+core/dm-gfx.$(O): core/dm-gfx.cpp core/dm-gfx.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-x-api/x-audio.o: x-api/x-audio.h x-api/x-audio.cpp
-	$(CXX) -o $@ $(FLAGS) x-api/x-audio.cpp
+core/bk-sim.$(O): core/bk-sim.cpp core/bk-sim.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-x-api/x-buffer.o: x-api/x-buffer.h x-api/x-buffer.cpp
-	$(CXX) -o $@ $(FLAGS) x-api/x-buffer.cpp
+x-api/x-audio.$(O): x-api/x-audio.cpp x-api/x-audio.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-x-api/x-fun.o: x-api/x-fun.h x-api/x-fun.cpp
-	$(CXX) -o $@ $(FLAGS) x-api/x-fun.cpp
+x-api/x-buffer.$(O): x-api/x-buffer.cpp x-api/x-buffer.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-x-api/x-gfx.o: x-api/x-gfx.h x-api/x-gfx.cpp
-	$(CXX) -o $@ $(FLAGS) x-api/x-gfx.cpp
+x-api/x-fun.$(O): x-api/x-fun.cpp x-api/x-fun.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-x-api/x-loadlum.o: x-api/x-loadlum.h x-api/x-loadlum.cpp
-	$(CXX) -o $@ $(FLAGS) x-api/x-loadlum.cpp
+x-api/x-gfx.$(O): x-api/x-gfx.cpp x-api/x-gfx.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-x-api/x-loadrgb.o: x-api/x-loadrgb.h x-api/x-loadrgb.cpp
-	$(CXX) -o $@ $(FLAGS) x-api/x-loadrgb.cpp
+x-api/x-loadlum.$(O): x-api/x-loadlum.cpp x-api/x-loadlum.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-x-api/x-thread.o: x-api/x-thread.h x-api/x-thread.cpp
-	$(CXX) -o $@ $(FLAGS) x-api/x-thread.cpp
+x-api/x-loadrgb.$(O): x-api/x-loadrgb.cpp x-api/x-loadrgb.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-x-api/x-vector3d.o: x-api/x-vector3d.h x-api/x-vector3d.cpp
-	$(CXX) -o $@ $(FLAGS) x-api/x-vector3d.cpp
+x-api/x-thread.$(O): x-api/x-thread.cpp x-api/x-thread.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-y-api/y-charting.o: y-api/y-charting.h y-api/y-charting.cpp
-	$(CXX) -o $@ $(FLAGS) y-api/y-charting.cpp
+x-api/x-vector3d.$(O): x-api/x-vector3d.cpp x-api/x-vector3d.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-y-api/y-echo.o: y-api/y-echo.h y-api/y-echo.cpp
-	$(CXX) -o $@ $(FLAGS) y-api/y-echo.cpp
+y-api/y-charting.$(O): y-api/y-charting.cpp y-api/y-charting.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-y-api/y-entity.o: y-api/y-entity.h y-api/y-entity.cpp
-	$(CXX) -o $@ $(FLAGS) y-api/y-entity.cpp
+y-api/y-echo.$(O): y-api/y-echo.cpp y-api/y-echo.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-y-api/y-fft.o: y-api/y-fft.h y-api/y-fft.cpp
-	$(CXX) -o $@ $(FLAGS) y-api/y-fft.cpp
+y-api/y-entity.$(O): y-api/y-entity.cpp y-api/y-entity.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-y-api/y-fluidsynth.o: y-api/y-fluidsynth.h y-api/y-fluidsynth.cpp
-	$(CXX) -o $@ $(FLAGS) y-api/y-fluidsynth.cpp
+y-api/y-fft.$(O): y-api/y-fft.cpp y-api/y-fft.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-y-api/y-particle.o: y-api/y-particle.h y-api/y-particle.cpp
-	$(CXX) -o $@ $(FLAGS) y-api/y-particle.cpp
+y-api/y-fluidsynth.$(O): y-api/y-fluidsynth.cpp y-api/y-fluidsynth.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-y-api/y-score-reader.o: y-api/y-score-reader.h y-api/y-score-reader.cpp
-	$(CXX) -o $@ $(FLAGS) y-api/y-score-reader.cpp
+y-api/y-particle.$(O): y-api/y-particle.cpp y-api/y-particle.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-y-api/y-waveform.o: y-api/y-waveform.h y-api/y-waveform.cpp
-	$(CXX) -o $@ $(FLAGS) y-api/y-waveform.cpp
+y-api/y-score-reader.$(O): y-api/y-score-reader.cpp y-api/y-score-reader.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-rtaudio/RtAudio-jack.o: FLAGS += -D__UNIX_JACK__
-rtaudio/RtAudio-jack.o: rtaudio/RtAudio.h rtaudio/RtAudio.cpp
-	$(CXX) -o $@ $(FLAGS) rtaudio/RtAudio.cpp
+y-api/y-waveform.$(O): y-api/y-waveform.cpp y-api/y-waveform.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-rtaudio/RtAudio-alsa.o: FLAGS += -D__LINUX_ALSA__
-rtaudio/RtAudio-alsa.o: rtaudio/RtAudio.h rtaudio/RtAudio.cpp
-	$(CXX) -o $@ $(FLAGS) rtaudio/RtAudio.cpp
+rtaudio/RtAudio-dsound.$(O): FLAGS += -D__WINDOWS_DS__
+rtaudio/RtAudio-dsound.$(O): rtaudio/RtAudio.cpp rtaudio/RtAudio.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-stk/Delay.o: stk/Delay.h stk/Delay.cpp
-	$(CXX) -o $@ $(FLAGS) stk/Delay.cpp
+rtaudio/RtAudio-jack.$(O): FLAGS += -D__UNIX_JACK__
+rtaudio/RtAudio-jack.$(O): rtaudio/RtAudio.cpp rtaudio/RtAudio.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-stk/DelayL.o: stk/DelayL.h stk/DelayL.cpp
-	$(CXX) -o $@ $(FLAGS) stk/DelayL.cpp
+rtaudio/RtAudio-alsa.$(O): FLAGS += -D__LINUX_ALSA__
+rtaudio/RtAudio-alsa.$(O): rtaudio/RtAudio.cpp rtaudio/RtAudio.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-stk/MidiFileIn.o: stk/MidiFileIn.h stk/MidiFileIn.cpp
-	$(CXX) -o $@ $(FLAGS) stk/MidiFileIn.cpp
+stk/Delay.$(O): stk/Delay.cpp stk/Delay.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
-stk/Stk.o: stk/Stk.h stk/Stk.cpp
-	$(CXX) -o $@ $(FLAGS) stk/Stk.cpp
+stk/DelayL.$(O): stk/DelayL.cpp stk/DelayL.h
+	$(CXX) $(FLAGS) -c -o $@ $<
+
+stk/MidiFileIn.$(O): stk/MidiFileIn.cpp stk/MidiFileIn.h
+	$(CXX) $(FLAGS) -c -o $@ $<
+
+stk/Stk.$(O): stk/Stk.cpp stk/Stk.h
+	$(CXX) $(FLAGS) -c -o $@ $<
 
 clean:
-	rm -f *~ *# *.o */*.o main
+	rm -f *~ *# *.$(O) */*.$(O) main
 

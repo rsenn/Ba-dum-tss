@@ -11,6 +11,18 @@ include( FindALSA )
 
 pkg_search_module(FLUIDSYNTH fluidsynth)
 
+find_package(Boost COMPONENTS filesystem system)
+
+if(Boost_LIBRARY_DIRS)
+  link_directories(${Boost_LIBRARY_DIRS})
+endif()
+if(Boost_INCLUDE_DIR)
+  include_directories(Boost_INCLUDE_DIR)
+endif()
+if(Boost_FILESYSTEM_LIBRARY)
+  add_definitions(-DHAVE_BOOST_FILESYSTEM=1)
+endif()
+
 include( CheckLibraryExists )
 check_library_exists(pthread pthread_create "" LIBPTHREAD_FOUND)
 
@@ -22,7 +34,7 @@ message("LIBPTHREAD: ${LIBPTHREAD}")
 
 add_definitions(-D__LINUX_ALSA__)
 
-add_definitions(-DSOUNDFONT=\"src/data/sfonts/rocking8m11e\ copy.sf2\")
+add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
 
 
 include_directories(
@@ -33,6 +45,34 @@ include_directories(
     src/x-api
     src/y-api
     ${FLUIDSYNTH_INCLUDE_DIR}
+)
+
+set(HEADERS
+    src/core/bk-sim.h
+    src/core/dm-audio.h
+    src/core/dm-gfx.h
+    src/core/dm-globals.h
+    src/rtaudio/RtAudio.h
+    src/stk/Delay.h
+    src/stk/DelayL.h
+    src/stk/MidiFileIn.h
+    src/stk/Stk.h
+    src/x-api/x-audio.h
+    src/x-api/x-buffer.h
+    src/x-api/x-fun.h
+    src/x-api/x-gfx.h
+    src/x-api/x-loadlum.h
+    src/x-api/x-loadrgb.h
+    src/x-api/x-thread.h
+    src/x-api/x-vector3d.h
+    src/y-api/y-charting.h
+    src/y-api/y-echo.h
+    src/y-api/y-entity.h
+    src/y-api/y-fft.h
+    src/y-api/y-fluidsynth.h
+    src/y-api/y-particle.h
+    src/y-api/y-score-reader.h
+    src/y-api/y-waveform.h
 )
 
 add_executable(ba_dum_tss
@@ -62,6 +102,7 @@ add_executable(ba_dum_tss
     src/y-api/y-particle.cpp
     src/y-api/y-score-reader.cpp
     src/y-api/y-waveform.cpp
+    ${HEADERS}
 )
 
 target_link_libraries(ba_dum_tss 
@@ -71,4 +112,6 @@ target_link_libraries(ba_dum_tss
   ${OPENGL_LIBRARIES}
   ${X11_LIBRARIES}
   ${LIBPTHREAD}
+  ${Boost_FILESYSTEM_LIBRARY}
+  ${Boost_SYSTEM_LIBRARY}
 )

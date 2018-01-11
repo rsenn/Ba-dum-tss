@@ -10,6 +10,19 @@
 #include "y-echo.h"
 #include "x-fun.h"
 #include <iostream>
+
+#ifndef NO_CHECK_EXISTS
+#ifdef HAVE_BOOST_FILESYSTEM
+#include <boost/filesystem.hpp>
+using namespace boost;
+#elif defined(__GXX_ABI_VERSION) && __GXX_ABI_VERSION < 1017 
+#include <experimental/filesystem>
+using namespace experimental;
+#else
+#include <filesystem>
+#endif
+#endif
+
 #include <time.h>
 
 #ifndef SOUNDFONT
@@ -163,6 +176,19 @@ static void audio_callback(SAMPLE * buffer, unsigned int numFrames, void * userD
 // desc: initialize audio system
 //--------------------------------------------------------------------------
 bool dm_audio_init( unsigned int srate, unsigned int frameSize, unsigned channels ) {
+
+    const char* soundfontFile =  std::getenv("SOUNDFONT");
+
+     if(soundfontFile == nullptr)
+       soundfontFile = SOUNDFONT;
+
+#ifndef NO_CHECK_EXISTS
+     if(!filesystem::exists(soundfontFile)) {
+        cerr << "SoundFont file '" << soundfontFile << "' not found. Terminating" << endl;
+        exit(1);
+     }
+#endif
+
     // cout << "tempoPeriod = " << Globals::tempoPeriod << endl;
     // initialize
     if( !XAudioIO::init( 0, 0, srate, frameSize, channels, audio_callback, NULL ) )
@@ -175,7 +201,7 @@ bool dm_audio_init( unsigned int srate, unsigned int frameSize, unsigned channel
     
     g_synth = new YFluidSynth();
     g_synth->init( srate, 32 );
-    g_synth->load( SOUNDFONT, "" );
+    g_synth->load( soundfontFile, "" );
     g_synth->programChange(0, 69);
     
     // // allocate echo

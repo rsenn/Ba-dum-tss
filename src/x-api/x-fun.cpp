@@ -37,8 +37,8 @@
 //    date: Winter 2010
 //-----------------------------------------------------------------------------
 #include "x-fun.h"
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <iostream>
 #include <algorithm>
 
@@ -49,7 +49,7 @@ using namespace std;
 
 //-----------------------------------------------------------------------------
 // name: rand2i()
-// desc: generates random int in [low, high)
+// desc: generates std::rand int in [low, high)
 //-----------------------------------------------------------------------------
 long XFun::rand2i( long low, long high )
 {
@@ -59,7 +59,7 @@ long XFun::rand2i( long low, long high )
     // diff
     long diff = high - low;
     // go
-    return low + random() % diff;
+    return low + std::rand() % diff;
 }
 
 
@@ -67,7 +67,7 @@ long XFun::rand2i( long low, long high )
 
 //-----------------------------------------------------------------------------
 // name: rand2f()
-// desc: generates random double in [low, high]
+// desc: generates std::rand double in [low, high]
 //-----------------------------------------------------------------------------
 double XFun::rand2f( double low, double high )
 {
@@ -79,7 +79,7 @@ double XFun::rand2f( double low, double high )
     // diff
     double diff = high - low;
     // go
-    return low + diff * random() / (double)0x7fffffff;
+    return low + diff * std::rand() / (double)0x7fffffff;
 }
 
 
@@ -87,12 +87,12 @@ double XFun::rand2f( double low, double high )
 
 //-----------------------------------------------------------------------------
 // name: srand()
-// desc: seeds random
+// desc: seeds std::rand
 //-----------------------------------------------------------------------------
 void XFun::srand()
 {
     // seed
-    srandom( (unsigned int)time( NULL ) );
+    std::srand( (unsigned int)time( NULL ) );
 }
 
 
@@ -243,6 +243,7 @@ string XFun::toUpper( const string & str )
 //       char* past = "2010-05-31 11:16:42"; 
 //       long diff = XFun::diffTime( past);
 //-----------------------------------------------------------------------------
+#if 0
 long XFun::diffTime( const char * str )
 {
     // cerr<< "diffTime received: " << str << endl;
@@ -282,7 +283,7 @@ long XFun::diffTime( const char * str )
     return diff; 
 }
 
-
+#endif
 
 
 //-----------------------------------------------------------------------------
