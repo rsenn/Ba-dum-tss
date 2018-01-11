@@ -132,6 +132,21 @@ bool XAudioIO::init( unsigned int inputDevice,
     // instantiate rt audio
     o_audio = new RtAudio();
 
+
+    {
+      int i, deviceCount = o_audio->getDeviceCount();
+      std::cerr << "Device count: " << deviceCount << std::endl;
+
+      for(i = 0; i < deviceCount; ++i) {
+         RtAudio::DeviceInfo info = o_audio->getDeviceInfo(i);
+
+         std::cerr << "Device." << i << ": " << info.name << std::endl;
+      }
+    }
+
+
+
+
     // make param structs
     RtAudio::StreamParameters iParams, oParams;
 
