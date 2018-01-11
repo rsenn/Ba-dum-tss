@@ -33,8 +33,8 @@ void mouseFunc( int button, int state, int x, int y );
 void specialFunc( int key, int x, int y );
 
 // width and height
-long g_width = 1024;
-long g_height = 720;
+long g_width = 1280;
+long g_height = 780;
 long g_last_width = g_width;
 long g_last_height = g_height;
 
@@ -943,6 +943,7 @@ void keyboardFunc( unsigned char key, int x, int y )
         //         Globals::sim->pause();
         //     break;
             
+        case 167: 
         case '`': // toggle fullscreen
         {
             // check fullscreen
@@ -984,6 +985,7 @@ void keyboardFunc( unsigned char key, int x, int y )
             Globals::currentPianoNote = 29;
             Globals::currentSynthNote = 29 + 24;
         break;
+        case 246: 
         case ';': 
             Globals::currentPatch = 3;
             Globals::currentPianoPatch = 3;
@@ -1000,6 +1002,7 @@ void keyboardFunc( unsigned char key, int x, int y )
             Globals::currentPianoNote = 34;
             Globals::currentSynthNote = 34 + 24;
         break;
+        case 252: 
         case '[': // high tom
             Globals::currentPatch = 5;
             Globals::currentPianoPatch = 5;
@@ -1008,6 +1011,7 @@ void keyboardFunc( unsigned char key, int x, int y )
             Globals::currentPianoNote = 36;
             Globals::currentSynthNote = 36 + 24;
         break;
+        case '\'': 
         case '-': 
             Globals::currentPatch = 6;
             Globals::currentPianoPatch = 6;
@@ -1016,6 +1020,7 @@ void keyboardFunc( unsigned char key, int x, int y )
             Globals::currentPianoNote = 39;
             Globals::currentSynthNote = 39 + 24;
         break;
+        case 94: 
         case '=': 
             Globals::currentPatch = 7;
             Globals::currentPianoPatch = 7;
@@ -1197,6 +1202,7 @@ void keyboardFunc( unsigned char key, int x, int y )
             }
         break;
         // grids 12 - 15
+        case 'y': 
         case 'z': 
             if (Globals::activeSynth == DM_DRUMS) {
                 Globals::drumGrid[12].notes[Globals::currentPatch].pitch = Globals::currentNote;

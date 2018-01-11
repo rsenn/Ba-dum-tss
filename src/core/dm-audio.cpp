@@ -12,6 +12,10 @@
 #include <iostream>
 #include <time.h>
 
+#ifndef SOUNDFONT
+#define SOUNDFONT "data/sfonts/rocking8m11e copy.sf2"
+#endif
+
 using namespace std;
 
 // globals
@@ -171,7 +175,7 @@ bool dm_audio_init( unsigned int srate, unsigned int frameSize, unsigned channel
     
     g_synth = new YFluidSynth();
     g_synth->init( srate, 32 );
-    g_synth->load( "data/sfonts/rocking8m11e copy.sf2", "" );
+    g_synth->load( SOUNDFONT, "" );
     g_synth->programChange(0, 69);
     
     // // allocate echo

@@ -22,6 +22,9 @@ message("LIBPTHREAD: ${LIBPTHREAD}")
 
 add_definitions(-D__LINUX_ALSA__)
 
+add_definitions(-DSOUNDFONT=\"src/data/sfonts/rocking8m11e\ copy.sf2\")
+
+
 include_directories(
     Ba-dum-tss/src
     src/core
