@@ -430,22 +430,20 @@ void YText::render()
     
     // set the linewidth
     glLineWidth( m_width );
-    // push
+    // push*/
     glPushMatrix();
     // stretch
     glScalef( m_stretch, 1, 1 );
-*/
-
-  glColor3ub(0,0,0);
+    
     // draw the string
-    freetype::print(g_font, loc.x, loc.y, m_text.c_str());
-/*j
-    //drawString( m_text );
+//    freetype::print(g_font, loc.x, loc.y, m_text.c_str());
+
+    drawString( m_text );
     // pop
     glPopMatrix();
 
     // glDisable(GL_BLEND);
-    // */
+    //
 }
 
 
@@ -467,8 +465,10 @@ void YText::drawString( const std::string & text )
     // scale to be smaller
     glScalef( .001f, .001f, .001f );
     // draw each character
-    for( int i = 0; i < len; i++ )
-        glutStrokeCharacter( GLUT_STROKE_ROMAN, str[i] );
+    freetype::write(g_font, g_font.h/.63f, str);
+
+    //for( int i = 0; i < len; i++ )      glutStrokeCharacter( GLUT_STROKE_ROMAN, str[i] );
+    //
     // pop
     glPopMatrix();
 }

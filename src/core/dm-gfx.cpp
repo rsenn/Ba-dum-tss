@@ -1555,14 +1555,16 @@ void displayFunc( )
 
     g_tempo->set("Tempo = " + to_string(Globals::bpm));
 
+          // draw the string
+    glColor3f(warmRed.x, warmRed.y, warmRed.z);
+       freetype::write(g_font, 50, "Ba-dum-tss!");
+       //freetype::print(g_font, g_width/2, g_height/2, "Ba-dum-tss!");
+             
     // cascade simulation
     Globals::sim->systemCascade();
 
 
 
-       glColor3ub(0xff,0,0);
-          // draw the string
-             freetype::print(g_font, g_width/2, g_height/2, "Ba-dum-tss!");
 
     // flush!
     glFlush( );

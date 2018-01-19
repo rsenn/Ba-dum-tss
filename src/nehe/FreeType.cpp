@@ -251,7 +251,7 @@ void write(const font_data &ft_font, float h, const char *text)  {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 
-	glListBase(font);
+	glListBase(ft_font.list_base);
 
 	float modelview_matrix[16];	
 	glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
@@ -310,9 +310,6 @@ void print(const font_data &ft_font, float x, float y, const char *fmt, ...)  {
 	}
 
 
-   write(ft_font, h, text);
-/*
-
 	//Here is some code to split the text that we have been
 	//given into a set of lines.
 	//This could be made much neater by using
@@ -349,7 +346,6 @@ void print(const font_data &ft_font, float x, float y, const char *fmt, ...)  {
 
 	glListBase(font);
 
-    oi
 	float modelview_matrix[16];	
 	glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
 
@@ -386,7 +382,7 @@ void print(const font_data &ft_font, float x, float y, const char *fmt, ...)  {
 
 
 	glPopAttrib();		
-*/
+
 	pop_projection_matrix();
 }
 
