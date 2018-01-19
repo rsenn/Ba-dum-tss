@@ -37,11 +37,11 @@
 //-----------------------------------------------------------------------------
 #include "y-entity.h"
 #include "x-fun.h"
+#include "FreeType.h"
 #include <iostream>
 using namespace std;
 
-
-
+extern freetype::font_data g_font; // declared in core/dm-gfx.cpp
 
 //-----------------------------------------------------------------------------
 // name: updateAll()
@@ -422,7 +422,7 @@ void YText::update( YTimeInterval dt )
 //-----------------------------------------------------------------------------
 void YText::render()
 {
-    // blend
+    /* // blend
     glEnable( GL_BLEND );
     // glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     // lighting
@@ -434,12 +434,18 @@ void YText::render()
     glPushMatrix();
     // stretch
     glScalef( m_stretch, 1, 1 );
+*/
+
+  glColor3ub(0,0,0);
     // draw the string
-    drawString( m_text );
+    freetype::print(g_font, loc.x, loc.y, m_text.c_str());
+/*j
+    //drawString( m_text );
     // pop
     glPopMatrix();
 
     // glDisable(GL_BLEND);
+    // */
 }
 
 
@@ -451,11 +457,11 @@ void YText::render()
 //-----------------------------------------------------------------------------
 void YText::drawString( const std::string & text )
 {
+
     // get string length
     GLint len = (GLint)text.length();
     // get c string
     const char * str = text.c_str();
-    
     // push
     glPushMatrix();
     // scale to be smaller

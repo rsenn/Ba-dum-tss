@@ -11,12 +11,12 @@
 #include "y-entity.h"
 #include "bk-sim.h"
 #include "x-fun.h"
+#include "FreeType.h"
 
 #include <stdlib.h>
 using namespace std;
 
 
-//-----------------------------------------------------------------------------
 // function prototypes
 //-----------------------------------------------------------------------------
 bool dm_gfx_init( int argc, const char ** argv );
@@ -37,6 +37,8 @@ long g_width = 1280;
 long g_height = 780;
 long g_last_width = g_width;
 long g_last_height = g_height;
+
+freetype::font_data g_font;
 
 // global variables
 GLboolean g_fullscreen = FALSE;
@@ -153,6 +155,9 @@ bool dm_gfx_init( int argc, char ** argv ) {
     //     // done
     //     return false;
     // }
+    //
+    g_font.init("data/font/verdana.ttf", 16);
+
     
     return true;
 }
@@ -1552,6 +1557,12 @@ void displayFunc( )
 
     // cascade simulation
     Globals::sim->systemCascade();
+
+
+
+       glColor3ub(0xff,0,0);
+          // draw the string
+             freetype::print(g_font, g_width/2, g_height/2, "Ba-dum-tss!");
 
     // flush!
     glFlush( );

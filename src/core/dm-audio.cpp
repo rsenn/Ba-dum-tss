@@ -11,17 +11,18 @@
 #include "x-fun.h"
 #include <iostream>
 
-#ifndef NO_CHECK_EXISTS
+//#ifndef NO_CHECK_EXISTS
 #ifdef HAVE_BOOST_FILESYSTEM
 #include <boost/filesystem.hpp>
 using namespace boost;
-#elif defined(__GXX_ABI_VERSION) && __GXX_ABI_VERSION < 1017 
+#elif defined(__GXX_ABI_VERSION) && __GXX_ABI_VERSION < 1017  && __GXX_ABI_VERSION >= 1011
 #include <experimental/filesystem>
 using namespace std::experimental;
 #else
-#include <filesystem>
+#define NO_CHECK_EXISTS
+//#include <filesystem>
 #endif
-#endif
+//#endif
 
 #include <time.h>
 

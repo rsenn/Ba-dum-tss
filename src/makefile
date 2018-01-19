@@ -3,14 +3,21 @@
 SYSTEM := $(shell uname -s)
 
 CXX = g++
+
+ifeq ($(DEBUG),1)
+CXXFLAGS = -g -ggdb -O0
+else
+CXXFLAGS = -g -O2
+endif
+
 #INCLUDES = -Icore/ -Irtaudio/ -Istk/ -Ix-api/ -Iy-api/ -I/opt/local/include
-INCLUDES := -I core -I rtaudio -I stk -I x-api -I y-api
+INCLUDES := -I core -I rtaudio -I stk -I x-api -I y-api -I nehe
 EXEEXT := 
 O := o
 
 ifeq ($(SYSTEM),MinGW)
   CXX = x86_64-w64-mingw32-g++
-  CXXFLAGS := $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --cflags  fluidsynth ) -DNO_CHECK_EXISTS $(INCLUDES) -c
+  CXXFLAGS += $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --cflags  fluidsynth ) -DNO_CHECK_EXISTS $(INCLUDES) -c
   CXXFLAGS += -D__WINDOWS_PTHREAD__
   LIBS = $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --libs fluidsynth)
   CXXFLAGS += -DFREEGLUT_STATIC
@@ -21,12 +28,13 @@ ifeq ($(SYSTEM),MinGW)
   O = obj
 else
 ifeq ($(SYSTEM),Linux)
-  CXXFLAGS :=  $(INCLUDES) -c -D__PLATFORM_LINUX__
+  CXXFLAGS +=  -std=c++11 $(INCLUDES) -c -D__PLATFORM_LINUX__
   SNDDRV ?= alsa
   LIBS  := $(shell pkg-config --libs freetype2 fluidsynth $(SNDDRV) gl glu freeglut) -lpthread -lm
+  LIBS  += -lstdc++
   #LIBS  += -lboost_filesystem
 else
-  CXXFLAGS := -D__MACOSX_CORE__ $(INCLUDES) -c
+  CXXFLAGS += -D__MACOSX_CORE__ $(INCLUDES) -c
   LIBS  = -framework CoreAudio -framework CoreMIDI -framework CoreFoundation \
 		   -framework IOKit -framework Carbon -framework OpenGL \
 		   -framework GLUT -lstdc++ -lm
