@@ -213,7 +213,14 @@ inline void pop_projection_matrix() {
 	glPopAttrib();
 }
 
-void write(const font_data &ft_font, float h, const char *text)  {
+void putchar(const font_data &ft_font, int ch)  {
+
+    glListBase(ft_font.list_base);
+    glCallList(ch);
+
+}
+
+void write_str(const font_data &ft_font, float h, const char *text)  {
 
     float x = 0, y = 0;  
 	
@@ -242,14 +249,6 @@ void write(const font_data &ft_font, float h, const char *text)  {
 		for(const char *n=start_line;n<c;n++) line.append(1,*n);
 		lines.push_back(line);
 	}
-
-	glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);	
-	glMatrixMode(GL_MODELVIEW);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 
 	glListBase(ft_font.list_base);
 
@@ -281,10 +280,6 @@ void write(const font_data &ft_font, float h, const char *text)  {
 
 		glPopMatrix();
 	}
-
-	glPopAttrib();		
-
-	//pop_projection_matrix();
 }
 
 ///Much like Nehe's glPrint function, but modified to work
@@ -325,7 +320,7 @@ void print(const font_data &ft_font, float x, float y, const char *fmt, ...)  {
     glTranslatef(x,y,0);
     glMultMatrixf(modelview_matrix);
 
-    write(ft_font, h, text);
+    write_str(ft_font, h, text);
 
     glPopMatrix();
 

@@ -156,7 +156,7 @@ bool dm_gfx_init( int argc, char ** argv ) {
     //     return false;
     // }
     //
-    g_font.init("data/font/verdana.ttf", 16);
+    g_font.init("data/font/arialb.ttf", 16);
 
     
     return true;
@@ -1557,7 +1557,7 @@ void displayFunc( )
 
           // draw the string
     glColor3f(warmRed.x, warmRed.y, warmRed.z);
-       freetype::write(g_font, 50, "Ba-dum-tss!");
+       //freetype::write_str(g_font, 50, "Ba-dum-tss!");
        //freetype::print(g_font, g_width/2, g_height/2, "Ba-dum-tss!");
              
     // cascade simulation

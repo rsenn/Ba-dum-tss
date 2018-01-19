@@ -460,17 +460,35 @@ void YText::drawString( const std::string & text )
     GLint len = (GLint)text.length();
     // get c string
     const char * str = text.c_str();
+
+      glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
+      glMatrixMode(GL_MODELVIEW);
+      glDisable(GL_LIGHTING);
+      glEnable(GL_TEXTURE_2D);
+      glDisable(GL_DEPTH_TEST);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      
+        float modelview_matrix[16];
+      glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
+
+
     // push
     glPushMatrix();
     // scale to be smaller
-    glScalef( .001f, .001f, .001f );
+    glScalef( .01f, .01f, .01f );
     // draw each character
-    freetype::write(g_font, g_font.h/.63f, str);
+    //freetype::write(g_font, g_font.h/.63f, str);
+        glMultMatrixf(modelview_matrix);
 
-    //for( int i = 0; i < len; i++ )      glutStrokeCharacter( GLUT_STROKE_ROMAN, str[i] );
+    for( int i = 0; i < len; i++ )      //glutStrokeCharacter( GLUT_STROKE_ROMAN, str[i] );
+      freetype::putchar(g_font, str[i]);
+
     //
     // pop
     glPopMatrix();
+
+    glPopAttrib();
 }
 
 
