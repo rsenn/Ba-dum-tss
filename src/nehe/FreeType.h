@@ -42,6 +42,8 @@ struct font_data {
 	void clean();
 };
 
+void write(const font_data &ft_font, float h, const char *text);
+
 //The flagship function of the library - this thing will print
 //out text at window coordinates x,y, using the font ft_font.
 //The current modelview matrix will also be applied to the text. 

@@ -42,6 +42,8 @@ else
 endif
 endif
 
+CXXFLAGS += -DNO_CHECK_EXISTS
+
 TARGET := ba_dum_tss.$(SNDDRV)$(EXEEXT)
 
 OBJS := main.$(O) core/dm-globals.$(O) core/dm-audio.$(O) core/dm-gfx.$(O) core/bk-sim.$(O) x-api/x-audio.$(O) x-api/x-buffer.$(O) x-api/x-fun.$(O) \
