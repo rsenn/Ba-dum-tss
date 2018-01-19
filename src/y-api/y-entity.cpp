@@ -479,7 +479,8 @@ void YText::drawString( const std::string & text )
     glScalef( .01f, .01f, .01f );
     // draw each character
     //freetype::write(g_font, g_font.h/.63f, str);
-        glMultMatrixf(modelview_matrix);
+    
+    glMultMatrixf(modelview_matrix);
 
     for( int i = 0; i < len; i++ )      //glutStrokeCharacter( GLUT_STROKE_ROMAN, str[i] );
       freetype::putchar(g_font, str[i]);
