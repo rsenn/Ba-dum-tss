@@ -1,8 +1,8 @@
-
-
 SYSTEM := $(shell uname -s)
 
 CXX = g++
+
+GLUT := freeglut
 
 ifeq ($(DEBUG),1)
 CXXFLAGS = -g -ggdb -O0
@@ -16,30 +16,42 @@ EXEEXT :=
 O := o
 
 ifeq ($(SYSTEM),MinGW)
-  CXX = x86_64-w64-mingw32-g++
-  CXXFLAGS += $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --cflags  fluidsynth ) -DNO_CHECK_EXISTS $(INCLUDES) -c
-  CXXFLAGS += -D__WINDOWS_PTHREAD__
-  LIBS = $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --libs fluidsynth)
-  CXXFLAGS += -DFREEGLUT_STATIC
-  LIBS += -lfreeglut_static #$(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --static freeglut)
-  LIBS += -lglu32 -lopengl32 -ldsound -lwinmm -lgdi32 -lole32 -lm
-  SNDDRV ?= dsound
-  EXEEXT = .exe
-  O = obj
+ CXX = x86_64-w64-mingw32-g++
+ CXXFLAGS += $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --cflags  fluidsynth ) -DNO_CHECK_EXISTS $(INCLUDES) -c
+ CXXFLAGS += -D__WINDOWS_PTHREAD__
+ LIBS = $(shell PKG_CONFIG_LIBDIR=/usr/x86_64-w64-mingw32/lib/pkgconfig  pkg-config --libs fluidsynth)
+ CXXFLAGS += -DFREEGLUT_STATIC
+ ifeq ($(GLUT),freeglut)
+  LIBS += -lfreeglut_static 
+ else
+  LIBS += -lopenglut
+ endif
+ LIBS += -lglu32 -lopengl32 -ldsound -lwinmm -lgdi32 -lole32 -lm
+ SNDDRV ?= dsound
+ EXEEXT = .exe
+ O = obj
 else
-ifeq ($(SYSTEM),Linux)
+ ifeq ($(SYSTEM),Linux)
   CXXFLAGS +=  -std=c++11 $(INCLUDES) -c -D__PLATFORM_LINUX__
   SNDDRV ?= alsa
-  LIBS  := $(shell pkg-config --libs freetype2 fluidsynth $(SNDDRV) gl glu freeglut) -lpthread -lm
+  LIBS  := $(shell pkg-config --libs freetype2 fluidsynth $(SNDDRV) gl glu ) -lpthread -lm
   LIBS  += -lstdc++
   #LIBS  += -lboost_filesystem
-else
-  CXXFLAGS += -D__MACOSX_CORE__ $(INCLUDES) -c
-  LIBS  = -framework CoreAudio -framework CoreMIDI -framework CoreFoundation \
-		   -framework IOKit -framework Carbon -framework OpenGL \
-		   -framework GLUT -lstdc++ -lm
-  SNDDRV ?= coreaudio
+ else
+   CXXFLAGS += -D__MACOSX_CORE__ $(INCLUDES) -c
+   LIBS  = -framework CoreAudio -framework CoreMIDI -framework CoreFoundation \
+ 		   -framework IOKit -framework Carbon -framework OpenGL \
+ 		   -framework GLUT -lstdc++ -lm
+   SNDDRV ?= coreaudio
+ endif
+ ifeq ($(GLUT),freeglut)
+  LIBS  += $(shell pkg-config --libs $(GLUT))
+ else
+  LIBS  += -l${GLUT}
+ endif
 endif
+ifneq ($(GLUT),freeglut)
+CXXFLAGS += -DUSE_OPENGLUT
 endif
 
 CXXFLAGS += -DNO_CHECK_EXISTS

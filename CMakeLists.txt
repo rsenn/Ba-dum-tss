@@ -30,11 +30,16 @@ if(LIBPTHREAD_FOUND)
   set(LIBPTHREAD pthread)
 endif() 
 
+include(FindFreetype)
+
+include_directories(${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
+
 message("LIBPTHREAD: ${LIBPTHREAD}")
 
 add_definitions(-D__LINUX_ALSA__)
 
 add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
+add_definitions(-DTRUETYPEFONT=\"../Ba-dum-tss/src/data/fonts/arialb.ttf\")
 
 
 include_directories(
@@ -44,39 +49,14 @@ include_directories(
     src/stk
     src/x-api
     src/y-api
+    src/nehe
     ${FLUIDSYNTH_INCLUDE_DIR}
 )
 
-set(HEADERS
-    src/core/bk-sim.h
-    src/core/dm-audio.h
-    src/core/dm-gfx.h
-    src/core/dm-globals.h
-    src/rtaudio/RtAudio.h
-    src/stk/Delay.h
-    src/stk/DelayL.h
-    src/stk/MidiFileIn.h
-    src/stk/Stk.h
-    src/x-api/x-audio.h
-    src/x-api/x-buffer.h
-    src/x-api/x-fun.h
-    src/x-api/x-gfx.h
-    src/x-api/x-loadlum.h
-    src/x-api/x-loadrgb.h
-    src/x-api/x-thread.h
-    src/x-api/x-vector3d.h
-    src/y-api/y-charting.h
-    src/y-api/y-echo.h
-    src/y-api/y-entity.h
-    src/y-api/y-fft.h
-    src/y-api/y-fluidsynth.h
-    src/y-api/y-particle.h
-    src/y-api/y-score-reader.h
-    src/y-api/y-waveform.h
-)
+file(GLOB HEADERS src/*/*.h)
+#file(GLOB SOURCES src/*/*.cpp)
 
-add_executable(ba_dum_tss
-    src/main.cpp
+set(SOURCES
     src/core/bk-sim.cpp
     src/core/dm-audio.cpp
     src/core/dm-gfx.cpp
@@ -102,12 +82,19 @@ add_executable(ba_dum_tss
     src/y-api/y-particle.cpp
     src/y-api/y-score-reader.cpp
     src/y-api/y-waveform.cpp
+    src/nehe/FreeType.cpp
+)
+
+add_executable(ba_dum_tss
+    src/main.cpp
+    ${SOURCES}
     ${HEADERS}
 )
 
 target_link_libraries(ba_dum_tss 
   ${FLUIDSYNTH_LIBRARIES}
   ${ALSA_LIBRARIES}
+  ${FREETYPE_LIBRARY_RELEASE}
   ${GLUT_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${X11_LIBRARIES}

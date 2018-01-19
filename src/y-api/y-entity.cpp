@@ -333,7 +333,7 @@ void YText::set( const string & text )
     // compute length
     m_length = .001 * glutStrokeLength( GLUT_STROKE_ROMAN,
                                         (const unsigned char *)text.c_str() );
-  std::cerr << "YText(x=" << loc.x << ",y=" << loc.y << ",z=" << loc.z << ")::set text=" << m_text << std::endl;
+ // std::cerr << "YText(x=" << loc.x << ",y=" << loc.y << ",z=" << loc.z << ")::set text=" << m_text << std::endl;
 }
 
 
@@ -371,7 +371,7 @@ void YText::setStretch( GLfloat stretch )
 //-----------------------------------------------------------------------------
 void YText::setCenterLocation( const Vector3D & v )
 {
-  std::cerr << "YText(" << m_text << ")::setCenterLocation x=" << v.x << ",y=" << v.y << ",z=" << v.z << std::endl;
+ // std::cerr << "YText(" << m_text << ")::setCenterLocation x=" << v.x << ",y=" << v.y << ",z=" << v.z << std::endl;
 
     // set loc
     this->loc = v;
