@@ -333,6 +333,7 @@ void YText::set( const string & text )
     // compute length
     m_length = .001 * glutStrokeLength( GLUT_STROKE_ROMAN,
                                         (const unsigned char *)text.c_str() );
+  std::cerr << "YText(x=" << loc.x << ",y=" << loc.y << ",z=" << loc.z << ")::set text=" << m_text << std::endl;
 }
 
 
@@ -370,6 +371,8 @@ void YText::setStretch( GLfloat stretch )
 //-----------------------------------------------------------------------------
 void YText::setCenterLocation( const Vector3D & v )
 {
+  std::cerr << "YText(" << m_text << ")::setCenterLocation x=" << v.x << ",y=" << v.y << ",z=" << v.z << std::endl;
+
     // set loc
     this->loc = v;
     // offset by length
@@ -476,15 +479,24 @@ void YText::drawString( const std::string & text )
     // push
     glPushMatrix();
     // scale to be smaller
-    glScalef( .01f, .01f, .01f );
+    //
+    //
+//   GLint   viewport[4];
+//       glGetIntegerv(GL_VIEWPORT, viewport);
+//       glMatrixMode(GL_PROJECTION);
+//       glPushMatrix();
+       //glLoadIdentity();
+   //    gluOrtho2D(viewport[0],viewport[2],viewport[1],viewport[3]);
+
+glScalef( .008f, .008f, .008f );
     // draw each character
-    //freetype::write(g_font, g_font.h/.63f, str);
     
-    glMultMatrixf(modelview_matrix);
+    //glMultMatrixf(modelview_matrix);
 
-    for( int i = 0; i < len; i++ )      //glutStrokeCharacter( GLUT_STROKE_ROMAN, str[i] );
+    freetype::write_str(g_font, g_font.h/.63f, str);;
+    /*for( int i = 0; i < len; i++ )      //glutStrokeCharacter( GLUT_STROKE_ROMAN, str[i] );
       freetype::putchar(g_font, str[i]);
-
+*/
     //
     // pop
     glPopMatrix();
