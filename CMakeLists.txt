@@ -39,7 +39,7 @@ message("LIBPTHREAD: ${LIBPTHREAD}")
 add_definitions(-D__LINUX_ALSA__)
 
 add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
-add_definitions(-DTRUETYPEFONT=\"../Ba-dum-tss/src/data/fonts/arialb.ttf\")
+add_definitions(-DTRUETYPEFONT=\"../Ba-dum-tss/src/data/font/arialb.ttf\")
 
 
 include_directories(
