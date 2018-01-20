@@ -34,8 +34,21 @@ else
  ifeq ($(SYSTEM),Linux)
   CXXFLAGS +=  -std=c++11 $(INCLUDES) -c -D__PLATFORM_LINUX__
   SNDDRV ?= alsa
-  LIBS  := $(shell pkg-config --libs freetype2 fluidsynth $(SNDDRV) gl glu ) -lpthread -lm
-  LIBS  += -lstdc++
+   LIBS  := $(shell pkg-config --libs freetype2 fluidsynth $(SNDDRV) ) 
+  ifeq ($(STATIC),1)
+   LIBS  := $(shell pkg-config --libs freeglut freetype2 fluidsynth $(SNDDRV) ) 
+  ##LIBS  := $(shell pkg-config -static --libs freetype2 fluidsynth $(SNDDRV) ) 
+   LIBS := $(patsubst -l%,/usr/lib/lib%.a,$(LIBS))
+   LIBS +=  $(patsubst %,/usr/lib/lib%.a,glib-2.0 sndfile vorbisenc vorbis FLAC ogg png15 bz2 z GLU)
+   LIBS += $(shell pkg-config --libs gl )
+   LDFLAGS += -static-libgcc -static-libstdc++
+  else  
+   LIBS += $(shell pkg-config --libs gl glu ) 
+  endif
+  #LIBS  += -lstdc++
+  
+  LIBS += -lpthread -lm
+  LIBS += -ldl
   #LIBS  += -lboost_filesystem
  else
    CXXFLAGS += -D__MACOSX_CORE__ $(INCLUDES) -c
@@ -44,10 +57,15 @@ else
  		   -framework GLUT -lstdc++ -lm
    SNDDRV ?= coreaudio
  endif
- ifeq ($(GLUT),freeglut)
-  LIBS  += $(shell pkg-config --libs $(GLUT))
+
+ ifneq ($(STATIC),1)
+  ifeq ($(GLUT),freeglut)
+   LIBS  += $(shell pkg-config --libs $(GLUT))
+  else
+   LIBS  += -l${GLUT}
+  endif
  else
-  LIBS  += -l${GLUT}
+   LIBS += -lX11 -lXrandr -lXxf86vm -lXi
  endif
 endif
 ifneq ($(GLUT),freeglut)
@@ -74,13 +92,13 @@ $(info EXEEXT: $(EXEEXT))
 $(info TARGET: $(TARGET))
 
 ba_dum_tss.dsound$(EXEEXT): $(OBJS) rtaudio/RtAudio-dsound.$(O)
-	$(CXX) -o $@ $^ $(LIBS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 ba_dum_tss.jack$(EXEEXT): $(OBJS) rtaudio/RtAudio-jack.$(O)
-	$(CXX) -o $@ $^ $(LIBS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 ba_dum_tss.alsa$(EXEEXT): $(OBJS) rtaudio/RtAudio-alsa.$(O)
-	$(CXX) -o $@ $^ $(LIBS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 main.$(O): main.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
