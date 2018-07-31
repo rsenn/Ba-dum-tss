@@ -38,9 +38,16 @@ message("LIBPTHREAD: ${LIBPTHREAD}")
 
 add_definitions(-D__LINUX_ALSA__)
 
-add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
-add_definitions(-DTRUETYPEFONT=\"../Ba-dum-tss/src/data/font/arialb.ttf\")
 
+#add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
+#add_definitions(-DTRUETYPEFONT=\"../Ba-dum-tss/src/data/font/arialb.ttf\")
+
+string(TOLOWER "share/${PROJECT_NAME}" DATADIR)
+set(IDATADIR "${CMAKE_INSTALL_PREFIX}/${DATADIR}")
+add_definitions(-DDATADIR="${IDATADIR}")
+
+add_definitions(-DSOUNDFONT=\"${IDATADIR}/sfonts/rocking8m11e\ copy.sf2\")
+add_definitions(-DTRUETYPEFONT=\"${IDATADIR}/font/arialb.ttf\")
 
 include_directories(
     Ba-dum-tss/src
@@ -101,4 +108,12 @@ target_link_libraries(ba_dum_tss
   ${LIBPTHREAD}
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
+)
+
+install(TARGETS ba_dum_tss DESTINATION bin)
+install(DIRECTORY 
+  "${CMAKE_SOURCE_DIR}/src/data/font" 
+  "${CMAKE_SOURCE_DIR}/src/data/sfonts" 
+  "${CMAKE_SOURCE_DIR}/src/data/texture" 
+  DESTINATION "${DATADIR}"
 )
