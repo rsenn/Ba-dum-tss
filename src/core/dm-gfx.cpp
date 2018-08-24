@@ -12,6 +12,8 @@
 #include "bk-sim.h"
 #include "x-fun.h"
 #include "FreeType.h"
+#include <ft2build.h>
+#include <freetype/freetype.h>
 
 #include <stdlib.h>
 using namespace std;
