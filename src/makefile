@@ -187,7 +187,7 @@ stk/MidiFileIn.$(O): stk/MidiFileIn.cpp stk/MidiFileIn.h
 stk/Stk.$(O): stk/Stk.cpp stk/Stk.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-nehe/FreeType.$(O): CXXFLAGS += $(shell pkg-config --cflags freetype2)
+core/dm-gfx.$(O) nehe/FreeType.$(O): CXXFLAGS += $(shell pkg-config --cflags freetype2)
 nehe/FreeType.$(O): nehe/FreeType.cpp nehe/FreeType.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
