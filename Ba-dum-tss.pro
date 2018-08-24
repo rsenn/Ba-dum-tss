@@ -3,20 +3,28 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += link_pkgconfig
+CONFIG += c++11
 
 PKGCONFIG += freetype2
 PKGCONFIG += freeglut
 PKGCONFIG += gl glu
 
 TARGET = Ba-dum-tss
+QMAKE_CXXFLAGS_WARN_ON += -Wno-char-subscripts -Wno-class-memaccess -Wno-delete-non-virtual-dtor -Wno-deprecated-declarations -Wno-misleading-indentation -Wno-reorder -Wno-sign-compare -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-value -Wno-unused-variable
 
 
 
 unix {
-  DEFINES += __PLATFORM_LINUX__=1
   DEFINES += __UNIX_JACK__=1
   PKGCONFIG += jack
+
+  LIBS += -lboost_filesystem
+  DEFINES += HAVE_BOOST_FILESYSTEM=1
 }
+
+linux: DEFINES += __LINUX_ALSA__=1
+
+PKGCONFIG += fluidsynth
 
 INCLUDEPATH += \
   src/core \
