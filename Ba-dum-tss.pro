@@ -12,17 +12,22 @@ PKGCONFIG += gl glu
 TARGET = Ba-dum-tss
 QMAKE_CXXFLAGS_WARN_ON += -Wno-char-subscripts -Wno-class-memaccess -Wno-delete-non-virtual-dtor -Wno-deprecated-declarations -Wno-misleading-indentation -Wno-reorder -Wno-sign-compare -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-value -Wno-unused-variable
 
+DEFINES += SOUNDFONT=$$shell_quote(\"../Ba-dum-tss/src/data/sfonts/rocking8m11e copy.sf2\")
+DEFINES += TRUETYPEFONT=$$shell_quote(\"../Ba-dum-tss/src/data/font/arialb.ttf\")
 
 
 unix {
   DEFINES += __UNIX_JACK__=1
   PKGCONFIG += jack
 
-  LIBS += -lboost_filesystem
+  LIBS += -lboost_filesystem -lboost_system
   DEFINES += HAVE_BOOST_FILESYSTEM=1
 }
 
-linux: DEFINES += __LINUX_ALSA__=1
+linux {
+  DEFINES += __LINUX_ALSA__=1
+  PKGCONFIG += alsa
+}
 
 PKGCONFIG += fluidsynth
 
@@ -40,7 +45,6 @@ SOURCES += \
     src/core/dm-audio.cpp \
     src/core/dm-gfx.cpp \
     src/core/dm-globals.cpp \
-    src/nehe/FreeType.cpp \
     src/rtaudio/RtAudio.cpp \
     src/stk/Delay.cpp \
     src/stk/DelayL.cpp \
@@ -62,7 +66,9 @@ SOURCES += \
     src/y-api/y-particle.cpp \
     src/y-api/y-score-reader.cpp \
     src/y-api/y-waveform.cpp \
-    src/main.cpp
+    src/main.cpp \
+    src/nehe/FreeType.cpp
+
 HEADERS += \
     src/core/bk-sim.h \
     src/core/dm-audio.h \
@@ -94,4 +100,5 @@ HEADERS += \
     src/y-api/y-fluidsynth.h \
     src/y-api/y-particle.h \
     src/y-api/y-score-reader.h \
-    src/y-api/y-waveform.h
+    src/y-api/y-waveform.h \
+    src/nehe/FreeType.h
