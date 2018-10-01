@@ -35,8 +35,15 @@ include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
 
 message("LIBPTHREAD: ${LIBPTHREAD}")
+if(MINGW OR WIN32)
+  #add_definitions(-D__WINDOWS_MM__=1 -D__WINDOWS_PTHREAD__=1)
+  add_definitions(-D__WINDOWS_DS__=1 -D__WINDOWS_PTHREAD__=1)
+  link_libraries(dsound winmm ole32)
+endif()
 
+if(LINUX)
 add_definitions(-D__LINUX_ALSA__)
+endif()
 
 
 #add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
@@ -44,10 +51,13 @@ add_definitions(-D__LINUX_ALSA__)
 
 string(TOLOWER "share/${PROJECT_NAME}" DATADIR)
 set(IDATADIR "${CMAKE_INSTALL_PREFIX}/${DATADIR}")
-add_definitions(-DDATADIR="${IDATADIR}")
+
+if(NOT MINGW)
+add_definitions(-DDATADIR=\"${IDATADIR}\")
 
 add_definitions(-DSOUNDFONT=\"${IDATADIR}/sfonts/rocking8m11e\ copy.sf2\")
 add_definitions(-DTRUETYPEFONT=\"${IDATADIR}/font/arialb.ttf\")
+endif()
 
 include_directories(
     Ba-dum-tss/src

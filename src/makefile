@@ -1,5 +1,9 @@
-SYSTEM := $(shell uname -s)
+SYSTEM := $(shell uname -o)
 
+ifeq ($(SYSTEM),Msys)
+  SYSTEM := MinGW
+endif
+$(info SYSTEM=$(SYSTEM))
 CXX = g++
 
 GLUT := freeglut
