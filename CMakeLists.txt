@@ -1,4 +1,4 @@
-project(Ba-dum-tss)
+project(ba-dum-tss)
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -42,15 +42,16 @@ if(MINGW OR WIN32)
 endif()
 
 if(LINUX)
-add_definitions(-D__LINUX_ALSA__)
+  add_definitions(-D__LINUX_ALSA__ -D__PLATFORM_LINUX__)
 endif()
-
-
-#add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
-#add_definitions(-DTRUETYPEFONT=\"../Ba-dum-tss/src/data/font/arialb.ttf\")
 
 string(TOLOWER "share/${PROJECT_NAME}" DATADIR)
 set(IDATADIR "${CMAKE_INSTALL_PREFIX}/${DATADIR}")
+
+add_definitions(-DSOUNDFONT=\"${IDATADIR}/sfonts/rocking8m11e\ copy.sf2\")
+add_definitions(-DTRUETYPEFONT=\"${IDATADIR}/font/arialb.ttf\")
+#add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
+#add_definitions(-DTRUETYPEFONT=\"../Ba-dum-tss/src/data/font/arialb.ttf\")
 
 if(NOT MINGW)
 add_definitions(-DDATADIR=\"${IDATADIR}\")

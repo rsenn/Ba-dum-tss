@@ -22,11 +22,16 @@ unix {
 
   LIBS += -lboost_filesystem -lboost_system
   DEFINES += HAVE_BOOST_FILESYSTEM=1
+
 }
 
 linux {
   DEFINES += __LINUX_ALSA__=1
   PKGCONFIG += alsa
+}
+
+unix|linux {
+LIBS += -lpthread
 }
 
 PKGCONFIG += fluidsynth
