@@ -45,20 +45,25 @@ if(LINUX)
   add_definitions(-D__LINUX_ALSA__ -D__PLATFORM_LINUX__)
 endif()
 
-string(TOLOWER "share/${PROJECT_NAME}" DATADIR)
-set(IDATADIR "${CMAKE_INSTALL_PREFIX}/${DATADIR}")
 
-add_definitions(-DSOUNDFONT=\"${IDATADIR}/sfonts/rocking8m11e\ copy.sf2\")
-add_definitions(-DTRUETYPEFONT=\"${IDATADIR}/font/arialb.ttf\")
+string(TOLOWER "share/${PROJECT_NAME}" RDATADIR)
+set(DATADIR "${RDATADIR}" CACHE STRING "Data dir" FORCE)
+
 #add_definitions(-DSOUNDFONT=\"../Ba-dum-tss/src/data/sfonts/rocking8m11e\ copy.sf2\")
 #add_definitions(-DTRUETYPEFONT=\"../Ba-dum-tss/src/data/font/arialb.ttf\")
 
-if(NOT MINGW)
-add_definitions(-DDATADIR=\"${IDATADIR}\")
+  #option(IDATADIR "Install data dir" "${CMAKE_INSTALL_PREFIX}/${DATADIR}")
+  set(IDATADIR "${CMAKE_INSTALL_PREFIX}/${DATADIR}" CACHE STRING "Install data dir" FORCE)
+  add_definitions(-DDATADIR=\"${IDATADIR}\")
+  
+  set(SOUNDFONT_FILE "sfonts/rocking8m11e_copy.sf2")
+  set(TRUETYPE_FILE "font/arialb.ttf")
 
-add_definitions(-DSOUNDFONT=\"${IDATADIR}/sfonts/rocking8m11e\ copy.sf2\")
-add_definitions(-DTRUETYPEFONT=\"${IDATADIR}/font/arialb.ttf\")
-endif()
+message("SoundFont file: ${IDATADIR}/${SOUNDFONT_FILE}")
+message("TrueType font: ${IDATADIR}/${TRUETYPE_FILE}")
+
+add_definitions(-DSOUNDFONT=\"${IDATADIR}/${SOUNDFONT_FILE}\")
+add_definitions(-DTRUETYPEFONT=\"${IDATADIR}/${TRUETYPE_FILE}\")
 
 include_directories(
     Ba-dum-tss/src
@@ -111,6 +116,7 @@ add_executable(ba_dum_tss
 
 target_link_libraries(ba_dum_tss 
   ${FLUIDSYNTH_LIBRARIES}
+  ${FLUIDSYNTH_LIBS}
   ${ALSA_LIBRARIES}
   ${FREETYPE_LIBRARY_RELEASE}
   ${GLUT_LIBRARIES}
@@ -128,3 +134,6 @@ install(DIRECTORY
   "${CMAKE_SOURCE_DIR}/src/data/texture" 
   DESTINATION "${DATADIR}"
 )
+
+install(FILES "${CMAKE_SOURCE_DIR}/src/data/${SOUNDFONT_FILE}" DESTINATION "${RDATADIR}/sfont")
+install(FILES "${CMAKE_SOURCE_DIR}/src/data/${TRUETYPE_FILE}" DESTINATION "${RDATADIR}/font")
