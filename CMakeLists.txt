@@ -54,7 +54,7 @@ set(DATADIR "${RDATADIR}" CACHE STRING "Data dir" FORCE)
 
   #option(IDATADIR "Install data dir" "${CMAKE_INSTALL_PREFIX}/${DATADIR}")
   set(IDATADIR "${CMAKE_INSTALL_PREFIX}/${DATADIR}" CACHE STRING "Install data dir" FORCE)
-  add_definitions(-DDATADIR=\"${IDATADIR}\")
+  #add_definitions(-DDATADIR=\"${IDATADIR}\")
   
   set(SOUNDFONT_FILE "sfonts/rocking8m11e_copy.sf2")
   set(TRUETYPE_FILE "font/arialb.ttf")
@@ -62,8 +62,8 @@ set(DATADIR "${RDATADIR}" CACHE STRING "Data dir" FORCE)
 message("SoundFont file: ${IDATADIR}/${SOUNDFONT_FILE}")
 message("TrueType font: ${IDATADIR}/${TRUETYPE_FILE}")
 
-add_definitions(-DSOUNDFONT=\"${IDATADIR}/${SOUNDFONT_FILE}\")
-add_definitions(-DTRUETYPEFONT=\"${IDATADIR}/${TRUETYPE_FILE}\")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSOUNDFONT=\"\\\"${IDATADIR}/${SOUNDFONT_FILE}\\\"\"")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTRUETYPEFONT=\"\\\"${IDATADIR}/${TRUETYPE_FILE}\\\"\"")
 
 include_directories(
     Ba-dum-tss/src
