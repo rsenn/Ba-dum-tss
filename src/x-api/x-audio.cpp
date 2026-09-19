@@ -163,17 +163,21 @@ bool XAudioIO::init( unsigned int inputDevice,
     oParams.deviceId = outputDevice;
     oParams.nChannels = o_num_channels;
 
+    // use ALSA's "default" PCM (goes through pulse/pipewire plugin, avoids "device busy" on raw hw:)
+    RtAudio::StreamOptions options;
+    options.flags = RTAUDIO_ALSA_USE_DEFAULT;
+
     try {
         // try to open stream
         o_audio->openStream( &oParams, &iParams, RTAUDIO_FLOAT32,
-                             srate, &o_num_frames, &audio_callback, userData );
+                             srate, &o_num_frames, &audio_callback, userData, &options );
     } catch ( RtError& e ) {
         try { // again
             // HACK: bump the oparams device id (on some systems, default in/out devices differ)
             oParams.deviceId++;
             // try to open stream
             o_audio->openStream( &oParams, &iParams, RTAUDIO_FLOAT32,
-                                srate, &o_num_frames, &audio_callback, userData );
+                                srate, &o_num_frames, &audio_callback, userData, &options );
         } catch( RtError & e ) {
             // error message
             cerr << "[x-audio]: cannot initialize real-time audio I/O..." << endl;
