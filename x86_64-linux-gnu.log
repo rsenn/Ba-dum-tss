@@ -1,0 +1,8 @@
+Entering directory 'build/x86_64-linux-gnu'
+-- Found GLUT: /usr/lib/x86_64-linux-gnu/libglut.so  
+LIBPTHREAD: pthread
+SoundFont file: /usr/local/share/ba-dum-tss/sfonts/rocking8m11e_copy.sf2
+TrueType font: /usr/local/share/ba-dum-tss/font/arialb.ttf
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/roman/Projects/rsenn/Ba-dum-tss/build/x86_64-linux-gnu
